@@ -7,7 +7,7 @@ udp.o:	udp.h udp.c
 	gcc -Wall -ansi -o ucp.o -c udp.c
 
 clean:
-	rm *.o 2> /dev/null; true
+	rm -f *.o 2> /dev/null
 
 distclean:	clean
-	rm *~ 2> /dev/null; true
+	rm -f *~ 2> /dev/null
