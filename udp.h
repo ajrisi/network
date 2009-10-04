@@ -12,6 +12,13 @@
 #ifndef _UDP_H_
 #define _UDP_H_
 
+#include "sock.h"
 
+
+typedef struct udp_sock_s udp_sock;
+struct udp_sock_s {
+  sock s;
+  
+};
 
 #endif /* _UDP_H_ */
