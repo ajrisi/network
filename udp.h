@@ -17,8 +17,7 @@
 
 typedef struct udp_sock_s udp_sock;
 struct udp_sock_s {
-  sock s;
-  
+  sock *s;
 };
 
 #endif /* _UDP_H_ */
