@@ -11,6 +11,15 @@
 #ifndef _TCP_H_
 #define _TCP_H_
 
+#include "sock.h"
 
+typedef struct tcp_s tcp;
+struct tcp_s {
+  sock *s;
+};
+
+tcp *tcp_new(int timeout);
+
+void tcp_free(tcp *t);
 
 #endif /* _TCP_H_ */
