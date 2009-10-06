@@ -107,10 +107,7 @@ int sock_connect(sock *s,
 
   /* set this socket to non-blocking. Might not want to do this in
      every scenario */
-  if((i = fcntl(s->fd, F_GETFL, 0)) >= 0) {
-    i = fcntl(s->fd, F_SETFL, i | O_NONBLOCK);
-  }
-  if(i < 0) {
+  if(set_nonblock(s->fd) < 0) {
     return -3;
   }
 

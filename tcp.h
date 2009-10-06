@@ -13,13 +13,13 @@
 
 #include "sock.h"
 
-typedef struct tcp_s tcp;
-struct tcp_s {
+typedef struct tcp_sock_s tcp_sock;
+struct tcp_sock_s {
   sock *s;
 };
 
-tcp *tcp_new(int timeout);
+tcp_sock *tcp_sock_new(int timeout);
 
-void tcp_free(tcp *t);
+void tcp_sock_free(tcp_sock *t);
 
 #endif /* _TCP_H_ */

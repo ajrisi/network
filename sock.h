@@ -20,6 +20,8 @@
 #include <errno.h>
 #include <unistd.h>
 
+#include "misc.h"
+
 typedef struct sock_s sock;
 struct sock_s {
   int fd;
