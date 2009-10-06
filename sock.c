@@ -86,13 +86,15 @@ int sock_bind(sock *s, const struct in_addr *localaddr, unsigned int localport)
 }
 
 int sock_connect(sock *s,
-		   const struct in_addr *dstaddr, unsigned int dstport,
-		   const struct in_addr *localaddr, unsigned int localport)
+		   struct in_addr *dstaddr, unsigned int dstport,
+		   struct in_addr *localaddr, unsigned int localport)
 {
   int i;
   struct sockaddr_in dst;
 
-  if(s == NULL) {
+  if((s == NULL) ||
+     (dstaddr == NULL) ||
+     (dstport < 0)) {
     return -1;
   }
 
@@ -122,15 +124,35 @@ int sock_connect(sock *s,
   if((i < 0) && (errno != EINPROGRESS)) {
     return -4;
   }
+
+  /* save the local and remote in_addr structures */
+  s->localaddr.addr = localaddr;
+  s->remoteaddr.addr = dstaddr;
+    
+
   
   return 0;
 }
 
 void sock_free(sock *s)
 {
+  if(s == NULL) return;
+
   /* close the sock if it is open */
   if(s->fd >= 0) {
     close(s->fd);
+  }
+
+  /* free the in_addr memory */
+  switch(s->domain) {
+  case PF_INET:
+    free(s->localaddr.addr);
+    free(s->remoteaddr.addr);
+    break;
+  case PF_INET6:
+    free(s->localaddr.addr6);
+    free(s->remoteaddr.addr6);
+    break;
   }
   free(s);
 }

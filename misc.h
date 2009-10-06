@@ -56,6 +56,6 @@ int set_nonblock(int fd);
  * 
  * @return 0 on success, negative values on failure 
  */
-int resolve_host(struct in_addr *dst, const char *name);
+struct in_addr *resolve_host(const char *name);
 
 #endif /* _MISC_H_ */

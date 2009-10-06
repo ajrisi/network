@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <stdio.h>
 
 #include "misc.h"
@@ -19,32 +20,31 @@ int set_nonblock(int fd)
   return 0;
 }
 
-int resolve_host(struct in_addr *dst, const char *name)
+struct in_addr *resolve_host(const char *name)
 {
   int i;
-  struct in_addr addr;
+  struct in_addr *addr;
   struct hostent *hosts;
-  char n[1024] = {0};
 
-  memset(&addr, 0, sizeof(struct in_addr));
+  addr = calloc(1, sizeof(struct in_addr));
+  if(addr == NULL) {
+    return NULL;
+  }
 
   /* this is not natively IPv6 compatable */
-  i = inet_pton(AF_INET, name, &addr);
+  i = inet_pton(AF_INET6, name, &addr);
   if(!i) {
     /* assume that it was not an ip format address, so it was a name? */
     if((hosts = gethostbyname(name))) {
       for(i=0; hosts->h_addr_list[i]; i++) {
-	printf("h_addr_list[%d] = %s\n", i, inet_ntop(AF_INET, hosts->h_addr_list[i], n, 1024));
-	memcpy(&addr, hosts->h_addr_list[i], sizeof(addr));
+	memcpy(addr, hosts->h_addr_list[i], sizeof(addr));
       }
 
     } else {
-      return -1;
+      return NULL;
     }
   }
 
-  memcpy(dst, &addr, sizeof(dst));
-
-  return 0;
+  return addr;
 }
 

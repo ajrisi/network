@@ -33,8 +33,8 @@ struct sock_s {
   unsigned short remoteport;
 
   union {
-    struct in_addr addr;
-    struct in6_addr addr6;
+    struct in_addr *addr;
+    struct in6_addr *addr6;
   } localaddr, remoteaddr;
   
 };
@@ -53,8 +53,8 @@ sock *sock_new(int domain, int type);
 int sock_bind(sock *s, const struct in_addr *localaddr, unsigned int localport);
 
 int sock_connect(sock *s,
-		   const struct in_addr *dstaddr, unsigned int dstport,
-		   const struct in_addr *localaddr, unsigned int localport);
+		   struct in_addr *dstaddr, unsigned int dstport,
+		   struct in_addr *localaddr, unsigned int localport);
 
 void sock_free(sock *s);
 
