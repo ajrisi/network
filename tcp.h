@@ -13,13 +13,6 @@
 
 #include "sock.h"
 
-typedef struct tcp_sock_s tcp_sock;
-struct tcp_sock_s {
-  sock *s;
-};
-
-tcp_sock *tcp_sock_new(int timeout);
-
-void tcp_sock_free(tcp_sock *t);
+sock *sock_new_tcp(int timeout);
 
 #endif /* _TCP_H_ */

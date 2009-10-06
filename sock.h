@@ -28,6 +28,15 @@ struct sock_s {
   int domain;
   int family;
   int timeout;
+
+  unsigned short localport;
+  unsigned short remoteport;
+
+  union {
+    struct in_addr addr;
+    struct in6_addr addr6;
+  } localaddr, remoteaddr;
+  
 };
 
 sock *sock_new(int domain, int type);

@@ -47,3 +47,4 @@ int resolve_host(struct in_addr *dst, const char *name)
 
   return 0;
 }
+

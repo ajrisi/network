@@ -16,9 +16,14 @@ sock *sock_new(int domain, int type)
   s->domain = domain;
 
   /* if the domain was PF_INET, set the family */
-  if(domain == PF_INET) {
+  switch(domain) {
+  case PF_INET:
     s->family = AF_INET;
-  } else {
+    break;
+  case PF_INET6:
+    s->family = AF_INET6;
+    break;
+  default:
     s->family = AF_UNSPEC;
   }
 
@@ -74,7 +79,7 @@ int sock_bind(sock *s, const struct in_addr *localaddr, unsigned int localport)
 
   i = bind(s->fd, (struct sockaddr*)&local, sizeof(local));
   if(i < 0) {
-    return -2;
+    return -1;
   }
 
   return 0;
