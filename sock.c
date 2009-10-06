@@ -137,6 +137,16 @@ int sock_connect(sock *s,
   return 0;
 }
 
+int sock_read(sock *s, char *buf, unsigned int size)
+{
+  if((s == NULL) ||
+     (buf == NULL)) {
+    return -1;
+  }
+
+  return read(s->fd, buf, size);
+}
+
 void sock_free(sock *s)
 {
   if(s == NULL) return;

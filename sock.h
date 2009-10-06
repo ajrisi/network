@@ -56,6 +56,8 @@ int sock_connect(sock *s,
 		   struct in_addr *dstaddr, unsigned int dstport,
 		   struct in_addr *localaddr, unsigned int localport);
 
+int sock_read(sock *s, char *buf, unsigned int size);
+
 void sock_free(sock *s);
 
 #endif /* _SOCK_H_ */
