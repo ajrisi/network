@@ -62,7 +62,7 @@ sock *sock_new(int domain, int type)
   return s;
 }
 
-int sock_bind(sock *s, const struct in_addr *localaddr, unsigned int localport)
+int sock_bind(sock *s, struct in_addr *localaddr, unsigned int localport)
 {
   struct sockaddr_in local;
   int i;
@@ -81,6 +81,9 @@ int sock_bind(sock *s, const struct in_addr *localaddr, unsigned int localport)
   if(i < 0) {
     return -1;
   }
+
+  /* save the local address */
+  s->localaddr.addr = localaddr;
 
   return 0;
 }

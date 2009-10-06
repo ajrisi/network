@@ -50,7 +50,7 @@ sock *sock_new(int domain, int type);
  * 
  * @return 0 on success, <0 on failure
  */
-int sock_bind(sock *s, const struct in_addr *localaddr, unsigned int localport);
+int sock_bind(sock *s, struct in_addr *localaddr, unsigned int localport);
 
 int sock_connect(sock *s,
 		   struct in_addr *dstaddr, unsigned int dstport,
