@@ -64,7 +64,7 @@ int sock_bind(sock *s, const struct in_addr *localaddr, unsigned int localport)
 
   memset(&local, 0, sizeof(local));
   local.sin_family = s->family;
-  local.sin_port = localport;
+  local.sin_port = htons(localport);
 
   /* the localaddr is optional, we might only want to connect to the
      local port */
@@ -102,7 +102,7 @@ int sock_connect(sock *s,
   /* now, create the remote address structure */
   memset(&dst, 0, sizeof(dst));
   dst.sin_family = s->family;
-  dst.sin_port = dstport;
+  dst.sin_port = htons(dstport);
   memcpy(&dst.sin_addr, dstaddr, sizeof(dst.sin_addr));
 
   /* set this socket to non-blocking. Might not want to do this in
@@ -118,7 +118,6 @@ int sock_connect(sock *s,
     return -4;
   }
   
-
   return 0;
 }
 

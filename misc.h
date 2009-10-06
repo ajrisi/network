@@ -13,6 +13,11 @@
 
 #include <unistd.h>
 #include <fcntl.h>
+#include <netdb.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
 
 
 /**
@@ -43,5 +48,14 @@
  */
 int set_nonblock(int fd);
 
+/** 
+ * Resolves a name into an in_addr structure
+ * 
+ * @param dst the location of the in_addr structure to fill
+ * @param name the name of the host, in IP form, or a domain name
+ * 
+ * @return 0 on success, negative values on failure 
+ */
+int resolve_host(struct in_addr *dst, const char *name);
 
 #endif /* _MISC_H_ */
