@@ -117,9 +117,9 @@ int sock_connect(sock *s,
 
   /* set this socket to non-blocking. Might not want to do this in
      every scenario */
-  if(set_nonblock(s->fd) < 0) {
+  /*if(set_nonblock(s->fd) < 0) {
     return -3;
-  }
+    }*/
 
   /* do the call to connect - because its non blocking, it can return
      neg. with errno saying its starting to work */
