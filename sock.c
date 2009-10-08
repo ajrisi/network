@@ -15,6 +15,9 @@ sock *sock_new(int domain, int type)
   /* save the domain */
   s->domain = domain;
 
+  /* save the type */
+  s->type = type;
+
   /* if the domain was PF_INET, set the family */
   switch(domain) {
   case PF_INET:
@@ -145,6 +148,11 @@ int sock_read(sock *s, char *buf, unsigned int size)
   }
 
   return read(s->fd, buf, size);
+}
+
+int sock_set_nonblock(sock *s) 
+{
+  return set_nonblock(s->fd);
 }
 
 void sock_free(sock *s)

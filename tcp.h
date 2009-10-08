@@ -15,4 +15,6 @@
 
 sock *sock_new_tcp(int timeout);
 
+int sock_listen(sock *s, int backlog);
+
 #endif /* _TCP_H_ */
