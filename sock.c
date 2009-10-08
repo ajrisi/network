@@ -168,6 +168,7 @@ void sock_free(sock *s)
 
   /* free the in_addr memory */
   switch(s->domain) {
+  default:
   case PF_INET:
     free(s->localaddr.addr);
     free(s->remoteaddr.addr);

@@ -66,6 +66,13 @@ sock *sock_accept(sock *s)
 	 sizeof(rin->sin_addr));
 
   as->family = rin->sin_family;
+  if(as->family == AF_INET) {
+    as->domain = PF_INET;
+  } else if (as->family == AF_INET6) {
+    as->domain = PF_INET6;
+  }
+
+
   as->remoteport = rin->sin_port;
 
   return as;
