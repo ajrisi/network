@@ -30,6 +30,8 @@ struct sock_s {
   int timeout;
   int type;
 
+  int listen;
+
   unsigned short localport;
   unsigned short remoteport;
 

@@ -18,6 +18,8 @@ sock *sock_new(int domain, int type)
   /* save the type */
   s->type = type;
 
+  s->listen = 0;
+
   /* if the domain was PF_INET, set the family */
   switch(domain) {
   case PF_INET:
