@@ -152,6 +152,16 @@ int sock_read(sock *s, char *buf, unsigned int size)
   return read(s->fd, buf, size);
 }
 
+int sock_write(sock *s, void *buf, unsigned int size)
+{
+ if((s == NULL) ||
+     (buf == NULL)) {
+    return -1;
+  }
+ 
+ return write(s->fd, buf, size);
+}
+
 int sock_set_nonblock(sock *s) 
 {
   return set_nonblock(s->fd);
