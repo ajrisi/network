@@ -1,5 +1,5 @@
 all:	tcp.o udp.o sock.o misc.o
-	ar rcs network.a tcp.o udp.o sock.o misc.o
+	ar rcs libnetwork.a tcp.o udp.o sock.o misc.o
 
 tcp.o:	tcp.h tcp.c
 	gcc -Wall -ansi -o tcp.o -c tcp.c
