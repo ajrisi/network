@@ -14,6 +14,7 @@ misc.o:	misc.h misc.c
 	gcc -Wall -ansi -o misc.o -c misc.c
 
 clean:
+	rm -f libnetwork.a 2> /dev/null
 	rm -f *.o 2> /dev/null
 
 distclean:	clean
