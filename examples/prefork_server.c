@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
 
   sock_listen(s, 5);
 
-  /* lets try a forking, prethreading server */
+  /* lets try a preforking server */
   for(i=0; i < 5; i++) {
 
     if((child_pid = fork()) == 0) {
@@ -44,24 +44,6 @@ int main(int argc, char **argv) {
   }
 
   wait(NULL);
-
-
-  /*
-
-
-  if(sock_connect(s, resolve_host("chronos.rh.rit.edu"), 13, NULL, 0) < 0) {
-    fprintf(stderr, "Could not do connect call\n");
-    return -1;
-  }
-
-  if((i = sock_read(s, time, 256)) < 0) {
-    fprintf(stderr, "Could not read from socket: %d\n", i);
-    return -1;
-  }
-
-  printf("Time: %s\n", time);
-  */
-
 
   sock_free(s);
   return 0;
