@@ -3,6 +3,7 @@
 #include <sock.h>
 #include <tcp.h>
 #include <udp.h>
+#include <dns.h>
 
 int main(int argc, char **argv) {
   int i = 0;
@@ -15,8 +16,8 @@ int main(int argc, char **argv) {
     return -1;
   }
 
-  if(sock_connect(s, resolve_host("chronos.rh.rit.edu"), 13, NULL, 0) < 0) {
-    fprintf(stderr, "Could not do connect call\n");
+  if((i = sock_connect(s, resolve_host("chronos.rh.rit.edu", 13), NULL)) < 0) {
+    fprintf(stderr, "Could not do connect call: %d\n", i);
     return -1;
   }
 

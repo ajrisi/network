@@ -67,77 +67,54 @@ sock *sock_new(int domain, int type)
   return s;
 }
 
-int sock_bind(sock *s, struct in_addr *localaddr, unsigned int localport)
+int sock_bind(sock *s, struct sockaddr *localaddr)
 {
-  struct sockaddr_in local;
   int i;
 
-  memset(&local, 0, sizeof(local));
-  local.sin_family = s->family;
-  local.sin_port = htons(localport);
-
-  /* the localaddr is optional, we might only want to connect to the
-     local port */
-  if(localaddr) {
-    memcpy(&local.sin_addr, localaddr, sizeof(local.sin_addr));
-  }
-
-  i = bind(s->fd, (struct sockaddr*)&local, sizeof(local));
+  i = bind(s->fd, localaddr, SOCKADDR_SIZEOF(localaddr));
   if(i < 0) {
     return -1;
   }
 
+  /* free the old local address if it existed */
+  free(s->localaddr);
+
   /* save the local address */
-  s->localaddr.addr = localaddr;
+  s->localaddr = localaddr;
 
   return 0;
 }
 
 int sock_connect(sock *s,
-		   struct in_addr *dstaddr, unsigned int dstport,
-		   struct in_addr *localaddr, unsigned int localport)
+		 struct sockaddr *dstaddr,
+		 struct sockaddr *localaddr)
 {
   int i;
-  struct sockaddr_in dst;
 
   if((s == NULL) ||
-     (dstaddr == NULL) ||
-     (dstport < 0)) {
+     (dstaddr == NULL)) {
     return -1;
   }
 
   /* call bind to bind to the local port first */
-  if(localaddr || localport) {
-    i = sock_bind(s, localaddr, localport);
+  if(localaddr) {
+    i = sock_bind(s, localaddr);
     if(i != 0) {
       return -2;
     }
+    free(s->localaddr);
+    s->localaddr = localaddr;
   }
 
-  /* now, create the remote address structure */
-  memset(&dst, 0, sizeof(dst));
-  dst.sin_family = s->family;
-  dst.sin_port = htons(dstport);
-  memcpy(&dst.sin_addr, dstaddr, sizeof(dst.sin_addr));
-
-  /* set this socket to non-blocking. Might not want to do this in
-     every scenario */
-  /*if(set_nonblock(s->fd) < 0) {
-    return -3;
-    }*/
-
-  /* do the call to connect - because its non blocking, it can return
-     neg. with errno saying its starting to work */
-  i = connect(s->fd, (struct sockaddr *)&dst, sizeof(dst));
+  /* do the call to connect - allow neg return for non blocking */
+  i = connect(s->fd, dstaddr, SOCKADDR_SIZEOF(dstaddr));
   if((i < 0) && (errno != EINPROGRESS)) {
-    return -4;
+    return -3;
   }
-
-  /* save the local and remote in_addr structures */
-  s->localaddr.addr = localaddr;
-  s->remoteaddr.addr = dstaddr;
-    
-
+  
+  /* free the old remote, save the new one */
+  free(s->remoteaddr);
+  s->remoteaddr = dstaddr;
   
   return 0;
 }
@@ -176,17 +153,9 @@ void sock_free(sock *s)
     close(s->fd);
   }
 
-  /* free the in_addr memory */
-  switch(s->domain) {
-  default:
-  case PF_INET:
-    free(s->localaddr.addr);
-    free(s->remoteaddr.addr);
-    break;
-  case PF_INET6:
-    free(s->localaddr.addr6);
-    free(s->remoteaddr.addr6);
-    break;
-  }
+  /* free the sockaddr memory */
+  free(s->remoteaddr);
+  free(s->localaddr);
+
   free(s);
 }

@@ -1,7 +1,32 @@
-#include <stdlib.h>
-#include <stdio.h>
-
 #include "misc.h"
+
+void port_set(struct sockaddr *sa, unsigned int port)
+{
+
+  switch(sa->sa_family) {
+  default:
+  case AF_INET:
+    ((struct sockaddr_in*)sa)->sin_port = htons(port);
+    break;
+  case AF_INET6:
+    ((struct sockaddr_in6*)sa)->sin6_port = htons(port);
+    break;
+  }
+
+}
+
+unsigned int port_get(struct sockaddr *sa)
+{
+  switch(sa->sa_family) {
+  default:
+  case AF_INET:
+    return ((struct sockaddr_in*)sa)->sin_port;
+    break;
+  case AF_INET6:
+    return ((struct sockaddr_in6*)sa)->sin6_port;
+    break;
+  }
+}
 
 int set_nonblock(int fd)
 {
@@ -20,31 +45,6 @@ int set_nonblock(int fd)
   return 0;
 }
 
-struct in_addr *resolve_host(const char *name)
-{
-  int i;
-  struct in_addr *addr;
-  struct hostent *hosts;
 
-  addr = calloc(1, sizeof(struct in_addr));
-  if(addr == NULL) {
-    return NULL;
-  }
 
-  /* this is not natively IPv6 compatable */
-  i = inet_pton(AF_INET6, name, &addr);
-  if(!i) {
-    /* assume that it was not an ip format address, so it was a name? */
-    if((hosts = gethostbyname(name))) {
-      for(i=0; hosts->h_addr_list[i]; i++) {
-	memcpy(addr, hosts->h_addr_list[i], sizeof(addr));
-      }
-
-    } else {
-      return NULL;
-    }
-  }
-
-  return addr;
-}
 

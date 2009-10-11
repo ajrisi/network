@@ -11,16 +11,16 @@
 #ifndef _SOCK_H_
 #define _SOCK_H_
 
-#include <sys/socket.h>
+#include "misc.h"
+
 #include <sys/types.h>
+#include <sys/socket.h>
 #include <netinet/in.h>
 #include <string.h>
 #include <stdlib.h>
 #include <fcntl.h>
 #include <errno.h>
 #include <unistd.h>
-
-#include "misc.h"
 
 typedef struct sock_s sock;
 struct sock_s {
@@ -35,10 +35,8 @@ struct sock_s {
   unsigned short localport;
   unsigned short remoteport;
 
-  union {
-    struct in_addr *addr;
-    struct in6_addr *addr6;
-  } localaddr, remoteaddr;
+  struct sockaddr *localaddr;
+  struct sockaddr *remoteaddr;
   
 };
 
@@ -49,15 +47,14 @@ sock *sock_new(int domain, int type);
  * 
  * @param s the socket
  * @param localaddr local address
- * @param localport local port
  * 
  * @return 0 on success, <0 on failure
  */
-int sock_bind(sock *s, struct in_addr *localaddr, unsigned int localport);
+int sock_bind(sock *s, struct sockaddr *localaddr);
 
 int sock_connect(sock *s,
-		   struct in_addr *dstaddr, unsigned int dstport,
-		   struct in_addr *localaddr, unsigned int localport);
+		 struct sockaddr *dstaddr,
+		 struct sockaddr *localaddr);
 
 int sock_write(sock *s, void *buf, unsigned int size);
 

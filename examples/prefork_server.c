@@ -3,6 +3,7 @@
 #include <sock.h>
 #include <tcp.h>
 #include <udp.h>
+#include <dns.h>
 
 int main(int argc, char **argv) {
   int i = 0;
@@ -15,7 +16,7 @@ int main(int argc, char **argv) {
     return -1;
   }
 
-  if(sock_bind(s, NULL, 5956) < 0) {
+  if(sock_bind(s, resolve_host(NULL, 5956)) < 0) {
     fprintf(stderr, "Error! Could not bind\n");
     exit(-1);
   }

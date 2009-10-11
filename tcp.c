@@ -2,7 +2,7 @@
 
 sock *sock_new_tcp(int timeout)
 {
-  return sock_new(AF_INET, SOCK_STREAM);
+  return sock_new(PF_INET, SOCK_STREAM);
 }
 
 int sock_listen(sock *s, int backlog)
@@ -25,55 +25,42 @@ sock *sock_accept(sock *s)
 {
   int i;
   sock *as;
-  struct sockaddr remote;
-  socklen_t remote_len;
-
-  struct sockaddr_in *rin;
+  struct sockaddr *remote;
+  socklen_t rlen;
 
   if(s == NULL) {
     return NULL;
   }
 
-  if(s->listen != 1) {
+  if((s->listen != 1) ||
+     (s->localaddr == NULL)) {
     return NULL;
   }
 
-  as = calloc(1, sizeof(sock));
+  as = sock_new(s->domain, s->type);
   if(as == NULL) {
+    return NULL;
+  }
+
+  remote = calloc(1, SOCKADDR_SIZEOF(s->localaddr));
+  if(remote == NULL) {
+    sock_free(as);
     return NULL;
   }
   
   /* actually accept here */
-  remote_len = sizeof(remote);
-  i = accept(s->fd, &remote, &remote_len);
+  rlen = SOCKADDR_SIZEOF(remote);
+  i = accept(s->fd, remote, &rlen);
 
   if(i < 0) {
-    free(as);
+    free(remote);
+    sock_free(as);
     return NULL;
   }
 
   as->fd = i;
-
-  as->remoteaddr.addr = (struct in_addr*)calloc(1, sizeof(struct in_addr));
-  if(as->remoteaddr.addr == NULL) {
-    free(as);
-    return NULL;
-  }
-
-  /* copy over the remote address */
-  rin = (struct sockaddr_in*)&remote;
-  memcpy(as->remoteaddr.addr, &(rin->sin_addr),
-	 sizeof(rin->sin_addr));
-
-  as->family = rin->sin_family;
-  if(as->family == AF_INET) {
-    as->domain = PF_INET;
-  } else if (as->family == AF_INET6) {
-    as->domain = PF_INET6;
-  }
-
-
-  as->remoteport = rin->sin_port;
+  as->remoteaddr = remote;
+  as->remoteport = port_get(remote);
 
   return as;
 }
