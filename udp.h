@@ -18,6 +18,10 @@ sock *sock_new_udp();
 
 int sock_recv(sock *s, void *buf, unsigned int len);
 
+int sock_recvfrom(sock *s, void *buf, unsigned int len, struct sockaddr *from, socklen_t *fromlen);
+
 int sock_recv_all(sock *s, void *buf, unsigned int len);
+
+int sock_recvfrom_all(sock *s, void *buf, unsigned int len, struct sockaddr *from, socklen_t *fromlen);
 
 #endif /* _UDP_H_ */
