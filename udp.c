@@ -7,11 +7,19 @@ sock *sock_new_udp()
 
 int sock_recv(sock *s, void *buf, unsigned int len)
 {
+  if((s == NULL) ||
+     (buf == NULL)) {
+    return -1;
+  }
   return recv(s->fd, buf, len, 0);
 }
 
 int sock_recv_all(sock *s, void *buf, unsigned int len)
 {
+  if((s == NULL) ||
+     (buf == NULL)) {
+    return -1;
+  }
   return recv(s->fd, buf, len, MSG_WAITALL);
 }
 
