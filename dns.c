@@ -42,3 +42,17 @@ struct sockaddr *resolve_host(const char *name, unsigned int port)
 
   return addr;
 }
+
+char *get_hostname(struct sockaddr *addr, char *buf, unsigned int buflen)
+{
+  int rc;
+
+  rc = getnameinfo(addr, SOCKADDR_SIZEOF(addr), buf, buflen, NULL, 0, NI_NAMEREQD);
+  if(rc != 0) {
+    return NULL;
+  } else {
+    return buf;
+  }
+
+}
+

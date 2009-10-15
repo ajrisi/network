@@ -11,4 +11,6 @@
 
 struct sockaddr *resolve_host(const char *name, unsigned int port);
 
+char *get_hostname(struct sockaddr *addr, char *buf, unsigned int buflen);
+
 #endif
