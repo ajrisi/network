@@ -14,13 +14,10 @@
 
 #include "sock.h"
 
-typedef struct udp_sock_s udp_sock;
-struct udp_sock_s {
-  sock *s;
-};
+sock *sock_new_udp();
 
-udp_sock *udp_sock_new(int timeout);
+int sock_recv(sock *s, void *buf, unsigned int len);
 
-void udp_sock_free(udp_sock *u);
+int sock_recv_all(sock *s, void *buf, unsigned int len);
 
 #endif /* _UDP_H_ */
