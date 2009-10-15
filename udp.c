@@ -22,7 +22,7 @@ int sock_recvfrom(sock *s, void *buf, unsigned int len, struct sockaddr *from, s
      (fromlen == NULL)) {
     return -1;
   }
-  return recv(s->fd, buf, len, 0, from, fromlen);
+  return recvfrom(s->fd, buf, len, 0, from, fromlen);
 }
 
 int sock_recv_all(sock *s, void *buf, unsigned int len)
@@ -42,7 +42,7 @@ int sock_recvfrom_all(sock *s, void *buf, unsigned int len, struct sockaddr *fro
      (fromlen == NULL)) {
     return -1;
   }
-  return recv(s->fd, buf, len, MSG_WAITALL, from, fromlen);
+  return recvfrom(s->fd, buf, len, MSG_WAITALL, from, fromlen);
 }
 
 
