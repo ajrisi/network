@@ -28,4 +28,6 @@ unsigned int port_get(struct sockaddr *sa);
 
 int set_nonblock(int fd);
 
+struct sockaddr *sockaddr_dup(struct sockaddr *sa);
+
 #endif /* _MISC_H_ */

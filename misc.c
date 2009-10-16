@@ -45,6 +45,22 @@ int set_nonblock(int fd)
   return 0;
 }
 
+struct sockaddr *sockaddr_dup(struct sockaddr *sa)
+{
+  struct sockaddr *new_sa;
 
+  if(sa == NULL) {
+    return NULL;
+  }
+
+  new_sa = (struct sockaddr *)calloc(1, SOCKADDR_SIZEOF(sa));
+  if(new_sa == NULL) {
+    return NULL;
+  }
+
+  memcpy(new_sa, sa, SOCKADDR_SIZEOF(sa));
+
+  return new_sa;
+}
 
 
