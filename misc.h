@@ -30,4 +30,14 @@ int set_nonblock(int fd);
 
 struct sockaddr *sockaddr_dup(struct sockaddr *sa);
 
+/** 
+ * Compares the family, port, and address.
+ * 
+ * @param sa1 sockaddr 1
+ * @param sa2 sockaddr 2
+ * 
+ * @return 0 on equal, 1 on not
+ */
+int sockaddr_cmp(struct sockaddr *sa1, struct sockaddr *sa2);
+
 #endif /* _MISC_H_ */
