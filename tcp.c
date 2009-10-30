@@ -72,7 +72,7 @@ int sock_readline(sock *s, char *target, unsigned int maxlen)
   char *tmp;
   char *lastchar;
 
-  if((sock == NULL) ||
+  if((s == NULL) ||
      (target == NULL)) {
     return -1;
   }
@@ -104,8 +104,8 @@ int sock_readline(sock *s, char *target, unsigned int maxlen)
   /* last char is now the first instance of either a \r or \n, we can
      now move it forward while there are more of them */
   while((*lastchar != '\0') &&
-	((lastchar == '\r') ||
-	 (lastchar == '\n'))) {
+	((*lastchar == '\r') ||
+	 (*lastchar == '\n'))) {
     lastchar++;
   }
 
