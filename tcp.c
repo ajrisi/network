@@ -65,19 +65,23 @@ sock *sock_accept(sock *s)
   return as;
 }
 
-int sock_readline(sock *s, char *target, unsigned int maxlen)
+int sock_readtok(sock *s, char *target, unsigned int maxlen, char *delim, enum sock_readtok_flags flags)
 {
-  int strlen;
+  int len;
   int nread;
+  int nread_tmp;
   char *tmp;
   char *lastchar;
+  char *startdelim;
+  char *enddelim;
+  int delimlen;
 
   if((s == NULL) ||
      (target == NULL)) {
     return -1;
   }
 
-  strlen = 0;
+  len = 0;
 
   tmp = malloc((maxlen+1) * sizeof(char));
   if(tmp == NULL) {
@@ -95,27 +99,62 @@ int sock_readline(sock *s, char *target, unsigned int maxlen)
      that has NOT been removed from the queue, we need to then look
      for a line delimeter to get len of next line, then, do a read for
      just that many characters into target, and return that code */
-  lastchar = strpbrk(tmp, "\r\n");
+  if(flags & EXACT_DELIM) {
+    delimlen = strlen(delim);
+    lastchar = strstr(tmp, delim);
+    startdelim = lastchar;
+    enddelim = lastchar + delimlen;
+  } else {
+    delimlen = 0;
+    lastchar = strpbrk(tmp, delim);
+    startdelim = lastchar;
+    enddelim = startdelim;
+
+    while((*enddelim != '\0') &&
+	  (strchr(delim, *enddelim) != NULL)) {
+      delimlen++;
+      enddelim++;
+    }
+
+  }
   if(lastchar == NULL) {
     free(tmp);
     return -1;
   }
 
-  /* last char is now the first instance of either a \r or \n, we can
-     now move it forward while there are more of them */
-  while((*lastchar != '\0') &&
-	((*lastchar == '\r') ||
-	 (*lastchar == '\n'))) {
-    lastchar++;
-  }
-
+  /* now, enddelim is the end of the delim, and delimlen is correct */
   /* we can now determine the length of the line by looking at the
      dist from start to end */
-  strlen = lastchar - tmp;
+  len = lastchar - tmp;
 
-  /* and return the result of a recv call for that many bytes */
-  /* this might need to be replaced with the readall read fn */
-  return recv(s->fd, target, strlen, 0);
+  /* if we are leaving the delim, read the len, if we are taking
+     the delim, read len + delim len, and if we are dropping delim,
+     then read len, then read delimlen into tmp */
+
+  if(flags & LEAVE_DELIM) {
+    nread = recv(s->fd, target, len, 0);
+    nread_tmp = nread;
+  } else if(flags & DROP_DELIM) {
+    nread = recv(s->fd, tmp, len+delimlen, 0);
+  } else {
+    /* TAKE DELIM */
+    nread = recv(s->fd, target, len+delimlen, 0);
+  }
+
+  if(nread < 0) {
+    free(tmp);
+    return nread;
+  }
+
+  if(flags & DROP_DELIM) {
+    /* copy from tmp the len of chars into target */
+    memcpy(target, tmp, len);
+    nread -= delimlen;
+  }
+
+  free(tmp);
+
+  return nread;
 }
 
 
