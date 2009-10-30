@@ -65,7 +65,58 @@ sock *sock_accept(sock *s)
   return as;
 }
 
+int sock_readline(sock *s, char *target, unsigned int maxlen)
+{
+  int strlen;
+  int nread;
+  char *tmp;
+  char *lastchar;
 
+  if((sock == NULL) ||
+     (target == NULL)) {
+    return -1;
+  }
+
+  strlen = 0;
+
+  tmp = malloc((maxlen+1) * sizeof(char));
+  if(tmp == NULL) {
+    return -1;
+  }
+  memset(tmp, '\0', maxlen+1);
+
+  nread = recv(s->fd, tmp, maxlen, MSG_PEEK);
+  if(nread < 0) {
+    free(tmp);
+    return nread;
+  }
+
+  /* we know at this point that tmp contains some data, up to maxlen,
+     that has NOT been removed from the queue, we need to then look
+     for a line delimeter to get len of next line, then, do a read for
+     just that many characters into target, and return that code */
+  lastchar = strpbrk(tmp, "\r\n");
+  if(lastchar == NULL) {
+    free(tmp);
+    return -1;
+  }
+
+  /* last char is now the first instance of either a \r or \n, we can
+     now move it forward while there are more of them */
+  while((*lastchar != '\0') &&
+	((lastchar == '\r') ||
+	 (lastchar == '\n'))) {
+    lastchar++;
+  }
+
+  /* we can now determine the length of the line by looking at the
+     dist from start to end */
+  strlen = lastchar - tmp;
+
+  /* and return the result of a recv call for that many bytes */
+  /* this might need to be replaced with the readall read fn */
+  return recv(s->fd, target, strlen, 0);
+}
 
 
 

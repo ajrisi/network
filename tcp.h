@@ -19,4 +19,6 @@ int sock_listen(sock *s, int backlog);
 
 sock *sock_accept(sock *s);
 
+int sock_readline(sock *s, char *target, unsigned int maxlen);
+
 #endif /* _TCP_H_ */
