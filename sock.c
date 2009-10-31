@@ -4,7 +4,7 @@ sock *sock_new(int domain, int type)
 {
   sock *s;
   int sockopt;
-  struct linger l;
+  /*struct linger l; */
   int i;
 
   s = (sock*)calloc(1, sizeof(sock));
@@ -141,7 +141,6 @@ int sock_write(sock *s, void *buf, unsigned int size)
 
 int sock_writestr(sock *s, char *str)
 {
-  printf("Send %s\n", str);
   return sock_write(s, str, strlen(str));
 }
 
@@ -169,7 +168,6 @@ int sock_sendfile(sock *s, char *path)
   /* TODO: this is not safe, it should handle partial reads and
      writes, and it doesnt (yet) */
   while((nread = read(fd, buffer, SOCK_SENDFILE_BUFFSZ)) > 0) {
-    printf("sending: %s\n", buffer);
     nwritten += send(s->fd, buffer, nread, 0);
   } 
   
