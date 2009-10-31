@@ -32,7 +32,6 @@ int main(int argc, char **argv) {
       memset(data, 0, DATALEN);
     }
 
-
     sock_free(as);
   }
   

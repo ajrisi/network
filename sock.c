@@ -45,14 +45,14 @@ sock *sock_new(int domain, int type)
 
   /* fix the linger opations so that we are not left in a TIME WAIT on
      close */
-  l.l_onoff = 1;
+  /*l.l_onoff = 1;
   l.l_linger = 0;
   i = setsockopt(s->fd, SOL_SOCKET, SO_LINGER, &l, sizeof(l));
   if(i < 0) {
     close(s->fd);
     free(s);
     return NULL;
-  }
+    }*/
 
   /* set reuse so that re-opening one that wasnt closed doesnt take
      forever */
@@ -137,6 +137,44 @@ int sock_write(sock *s, void *buf, unsigned int size)
   }
  
  return write(s->fd, buf, size);
+}
+
+int sock_writestr(sock *s, char *str)
+{
+  printf("Send %s\n", str);
+  return sock_write(s, str, strlen(str));
+}
+
+int sock_sendfile(sock *s, char *path)
+{
+  int fd;
+  int nwritten;
+  int nread;
+  char buffer[SOCK_SENDFILE_BUFFSZ];
+  /* open the file, do block writes to the socket until we reach the
+     end of the file, or the socket throws an error */
+
+  if(s == NULL) {
+    return -1;
+  }
+
+  nwritten = 0;
+  nread = 0;
+
+  fd = open(path, O_RDONLY);
+  if(fd == -1) {
+    return -1;
+  }
+
+  /* TODO: this is not safe, it should handle partial reads and
+     writes, and it doesnt (yet) */
+  while((nread = read(fd, buffer, SOCK_SENDFILE_BUFFSZ)) > 0) {
+    printf("sending: %s\n", buffer);
+    nwritten += send(s->fd, buffer, nread, 0);
+  } 
+  
+  close(fd);
+  return nwritten;
 }
 
 int sock_set_nonblock(sock *s) 

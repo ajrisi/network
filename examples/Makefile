@@ -1,4 +1,4 @@
-all: prefork_server daytime_client readline_server
+all: prefork_server daytime_client readline_server webserver_simple
 
 prefork_server: prefork_server.c
 	gcc -ggdb -o prefork_server prefork_server.c -lnetwork -L../ -I../
@@ -9,10 +9,14 @@ daytime_client: daytime_client.c
 readline_server: readline_server.c
 	gcc -ggdb -o readline_server readline_server.c -lnetwork -L../ -I../
 
+webserver_simple: webserver_simple.c
+	gcc -ggdb -o webserver_simple webserver_simple.c -lnetwork -L../ -I../
+
 clean:
 	rm -f prefork_server 2> /dev/null
 	rm -f daytime_client 2> /dev/null
 	rm -f readline_server 2> /dev/null
+	rm -f webserver_simple 2> /dev/null
 
 distclean: clean
 	rm -f *~ 2> /dev/null

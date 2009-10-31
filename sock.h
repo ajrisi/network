@@ -22,6 +22,8 @@
 #include <errno.h>
 #include <unistd.h>
 
+#define SOCK_SENDFILE_BUFFSZ 512
+
 typedef struct sock_s sock;
 struct sock_s {
   int fd;
@@ -58,7 +60,11 @@ int sock_connect(sock *s,
 
 int sock_write(sock *s, void *buf, unsigned int size);
 
+int sock_writestr(sock *s, char *str);
+
 int sock_read(sock *s, char *buf, unsigned int size);
+
+int sock_sendfile(sock *s, char *path);
 
 int sock_set_nonblock(sock *s);
 
